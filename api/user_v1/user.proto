@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option go_package = "github.com/jumayevgadam/evernote-go/pkg/user_v1;user_v1";
+
+import "abstract.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service UserService {
+    SignUp(SignUpReq)
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
