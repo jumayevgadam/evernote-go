@@ -4,11 +4,12 @@ option go_package = "github.com/jumayevgadam/evernote-go/pkg/abstract;abstract";
 
 message Page {
     int32 currentPage = 1;
-    int32 itemsPerPage = 2; 
+    int32 limit = 2; 
 }
 
 message Pagination{
   Page page = 1;
-  int64 totalItems = 2;
+  int64 itemsInCurrentPage = 2;
+  int64 totalItems = 3;
 }
 
