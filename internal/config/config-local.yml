@@ -1,5 +1,5 @@
 server:
-  Port: 5000
+  Port: 4000
   Mode: Development
   JwtSecretKey: evernote-jwt-secret-key
   ReadTimeout: 10
@@ -18,7 +18,7 @@ postgres:
   port: 5432
   user: postgres
   password: 123456
-  db_name: evernote_go
+  db_name: evernote
   sslmode: disable
 
 redis:

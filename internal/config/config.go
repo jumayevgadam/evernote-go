@@ -87,6 +87,10 @@ func LoadConfig(filename string) (*viper.Viper, error) {
 
 // ParseConfig file is used for parsing configuration.
 func ParseConfig(v *viper.Viper) (*Config, error) {
+	if v == nil {
+		return nil, fmt.Errorf("viper instance nil")
+	}
+
 	var c Config
 
 	err := v.Unmarshal(&c)
