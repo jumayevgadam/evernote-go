@@ -39,9 +39,6 @@ func (h *UserHandler) SignUp() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"message": "successfully created user",
-			"userID":  userID,
-		})
+		c.JSON(http.StatusOK, userID)
 	}
 }

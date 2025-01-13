@@ -30,8 +30,8 @@ func (r *UserRepository) SignUp(ctx context.Context, data userModel.SignUpReqDat
 		ctx,
 		signUpQuery,
 		data.Username,
-		data.Email,
 		data.Password,
+		data.Email,
 	).Scan(&userID)
 
 	if err != nil {

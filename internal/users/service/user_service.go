@@ -30,7 +30,7 @@ func (s *UserService) SignUp(ctx context.Context, req userModel.SignUpReq) (int,
 		return 0, err
 	}
 	req.Password = hashedPass
-	
+
 	userID, err := s.repo.UsersRepo().SignUp(ctx, req.ToPsqlDBStorage())
 	if err != nil {
 		return 0, err

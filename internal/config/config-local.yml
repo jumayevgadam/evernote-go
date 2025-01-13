@@ -1,10 +1,10 @@
 server:
-  Port: 4000
+  Port: 7000
   Mode: Development
   JwtSecretKey: evernote-jwt-secret-key
-  ReadTimeout: 10
-  WriteTimeout: 10
-  CtxDefaultTimeout: 10
+  ReadTimeout: 10s
+  WriteTimeout: 10s
+  CtxDefaultTimeout: 10s
 
 logger:
   Development: true

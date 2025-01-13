@@ -46,34 +46,34 @@ func Run(configPath string) {
 
 	dataStore := postgres.NewDataStore(psqlDB)
 
-	// HTTP server.
 	srv := server.NewServer(cfg, dataStore, appLogger)
+	r := srv.MapHandlers()
+
+	httpServer := &http.Server{
+		Addr:         ":" + cfg.Server.Port,
+		Handler:      r,
+		ReadTimeout:  cfg.Server.ReadTimeout,
+		WriteTimeout: cfg.Server.WriteTimeout,
+	}
 
 	go func() {
-		appLogger.Infof("server started on http port: %s", srv.HttpServer.Addr)
+		appLogger.Infof("server started on http port: %s", cfg.Server.Port)
 
-		if err := srv.Run(); err != nil && err != http.ErrServerClosed {
-			appLogger.Errorf("error occured while running http server: %v", err.Error())
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			appLogger.Errorf("error in running server: %v", err.Error())
 		}
 	}()
-
-	srv.MapHandlers()
-
-	appLogger.Info("server started")
 
 	// graceful shutdown.
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
-	appLogger.Info("shutdown server")
 
-	const timeout = 5 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
-	defer shutdown()
-
-	if err := srv.Stop(ctx); err != nil {
+	if err := httpServer.Shutdown(ctx); err != nil {
 		appLogger.Errorf("failed to stop server: %v", err.Error())
 	}
 }
