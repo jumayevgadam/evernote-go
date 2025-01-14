@@ -7,4 +7,5 @@ import (
 
 func MapUserRoutes(r *gin.RouterGroup, h users.Handler) {
 	r.POST("/register", h.SignUp())
+	r.POST("/login", h.Login())
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,10 +36,36 @@ func (h *UserHandler) SignUp() gin.HandlerFunc {
 
 		userID, err := h.service.SignUp(c, req)
 		if err != nil {
+			log.Println(err)
 			httpError.Response(c, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, userID)
+		c.JSON(http.StatusOK, gin.H{
+			"message": "user successfully created",
+			"userID":  userID,
+		})
+	}
+}
+
+func (h *UserHandler) Login() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var loginReq userModel.LoginReq
+
+		err := reqvalidator.ReadRequestJSON(c, &loginReq)
+		if err != nil {
+			httpError.Response(c, err)
+			return
+		}
+
+		tokenStr, err := h.service.Login(c, loginReq)
+		if err != nil {
+			httpError.Response(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"accessToken": tokenStr,
+		})
 	}
 }

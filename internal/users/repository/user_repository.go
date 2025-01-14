@@ -40,3 +40,20 @@ func (r *UserRepository) SignUp(ctx context.Context, data userModel.SignUpReqDat
 
 	return userID, nil
 }
+
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (userModel.AllUserData, error) {
+	var userData userModel.AllUserData
+
+	err := r.psqlDB.Get(
+		ctx,
+		&userData,
+		getUserByEmailQuery,
+		email,
+	)
+
+	if err != nil {
+		return userModel.AllUserData{}, err
+	}
+
+	return userData, nil
+}

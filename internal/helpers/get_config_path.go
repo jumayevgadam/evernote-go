@@ -1,9 +1,11 @@
 package helpers
 
+import "os"
+
 func GetConfigPath(configPath string) string {
 	if configPath == "docker" {
-		return "./internal/config/config-docker"
+		return os.Getenv("DOCKER_CONFIG_PATH")
 	}
 
-	return "./internal/config/config-local"
+	return os.Getenv("LOCAL_CONFIG_PATH")
 }

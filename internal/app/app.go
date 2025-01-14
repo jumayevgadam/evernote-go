@@ -21,13 +21,11 @@ func Run(configPath string) {
 	cfgFile, err := config.LoadConfig(configPath)
 	if err != nil {
 		zap.L().Error("app.config.LoadConfig: error", zap.Error(err))
-		// return
 	}
 
 	cfg, err := config.ParseConfig(cfgFile)
 	if err != nil {
 		zap.L().Error("app.config.ParseConfig: error", zap.Error(err))
-		// return
 	}
 
 	appLogger := logger.NewAPILogger(cfg)

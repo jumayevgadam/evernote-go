@@ -10,9 +10,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/jumayevgadam/evernote-go/internal/config"
 	"github.com/jumayevgadam/evernote-go/pkg/httpError/errlist"
-	"github.com/jumayevgadam/evernote-go/pkg/logger"
 )
 
 // RestErr interface is used for handling errors.
@@ -24,9 +22,9 @@ type RestErr interface {
 
 // RestError struct keeps error details.
 type RestError struct {
-	ErrStatus  int    `json:"status"`
-	ErrKind    string `json:"kind"`
-	ErrMessage string `json:"message"`
+	ErrStatus  int    `json:"err_status"`
+	ErrKind    string `json:"err_kind"`
+	ErrMessage string `json:"err_message"`
 }
 
 // Status returns error status.
@@ -44,77 +42,68 @@ func (e RestError) Message() string {
 	return fmt.Sprintf("%s: %s", e.ErrKind, e.ErrMessage)
 }
 
-// NewRestError returns new RestError.
-func NewRestError(status int, kind, message string) RestErr {
-	return &RestError{
-		ErrStatus:  status,
-		ErrKind:    kind,
+// Predefined error constructors.
+// NewBadRequest returns new bad request error.
+func NewBadRequestError(message string) RestErr {
+	return RestError{
+		ErrStatus:  http.StatusBadRequest,
+		ErrKind:    errlist.ErrBadRequest.Error(),
 		ErrMessage: message,
 	}
 }
 
-// Predefined error constructors.
-// NewBadRequest returns new bad request error.
-func NewBadRequestError(message string) RestErr {
-	return NewRestError(
-		http.StatusBadRequest,
-		errlist.ErrBadRequest.Error(),
-		message,
-	)
-}
-
 // NewInternalServer returns new internal server error.
 func NewInternalServerError(message string) RestErr {
-	return NewRestError(
-		http.StatusInternalServerError,
-		errlist.ErrInternalServer.Error(),
-		message,
-	)
+	return RestError{
+		ErrStatus:  http.StatusInternalServerError,
+		ErrKind:    errlist.ErrInternalServer.Error(),
+		ErrMessage: message,
+	}
 }
 
 // NewNotFound returns new not found error.
 func NewNotFoundError(message string) RestErr {
-	return NewRestError(
-		http.StatusNotFound,
-		errlist.ErrNotFound.Error(),
-		message,
-	)
+	return RestError{
+		ErrStatus:  http.StatusNotFound,
+		ErrKind:    errlist.ErrNotFound.Error(),
+		ErrMessage: message,
+	}
 }
 
 // NewBadQueryParams returns new bad query params error.
 func NewBadQueryParamsError(message string) RestErr {
-	return NewRestError(
-		http.StatusBadRequest,
-		errlist.ErrBadQueryParams.Error(),
-		message,
-	)
+	return RestError{
+		ErrStatus:  http.StatusBadRequest,
+		ErrKind:    errlist.ErrBadQueryParams.Error(),
+		ErrMessage: message,
+	}
 }
 
 // NewUnauthorized returns new unauthorized error.
 func NewUnauthorizedError(message string) RestErr {
-	return NewRestError(
-		http.StatusUnauthorized,
-		errlist.ErrUnauthorized.Error(),
-		message,
-	)
+	return RestError{
+		ErrStatus:  http.StatusUnauthorized,
+		ErrKind:    errlist.ErrUnauthorized.Error(),
+		ErrMessage: message,
+	}
 }
 
 // NewForbidden returns new forbidden error.
 func NewForbiddenError(message string) RestErr {
-	return NewRestError(
-		http.StatusForbidden,
-		errlist.ErrForbidden.Error(),
-		message,
-	)
+	return RestError{
+		ErrStatus:  http.StatusForbidden,
+		ErrKind:    errlist.ErrForbidden.Error(),
+		ErrMessage: message,
+	}
 }
 
 // NewConflict returns new conflict error.
 func NewConflictError(message string) RestErr {
-	return NewRestError(
-		http.StatusConflict,
-		errlist.ErrConflict.Error(),
-		message,
-	)
+	return RestError{
+		ErrStatus:  http.StatusConflict,
+		ErrKind:    errlist.ErrConflict.Error(),
+		ErrMessage: message,
+	}
 }
 
 // ParseError returns error based on error kind.
@@ -199,9 +188,10 @@ func ParseValidationError(err error) RestErr {
 
 // Response returns ErrorResponse, for clean syntax I took function name Response.
 func Response(c *gin.Context, err error) {
-	logger := logger.NewAPILogger(&config.Config{})
-	logger.InitLogger()
+	parsedErr := ParseError(err)
 
-	errStatus, errResponse := ParseError(err).Status(), ParseError(err).Message()
-	c.JSON(errStatus, errResponse)
+	c.JSON(parsedErr.Status(), gin.H{
+		"ErrStatus":  parsedErr.Status(),
+		"ErrMessage": parsedErr.Message(),
+	})
 }

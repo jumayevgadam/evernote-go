@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jumayevgadam/evernote-go/internal/database"
+	"github.com/jumayevgadam/evernote-go/internal/helpers"
 	userModel "github.com/jumayevgadam/evernote-go/internal/models/user"
 	"github.com/jumayevgadam/evernote-go/internal/users"
 	"github.com/jumayevgadam/evernote-go/pkg/utils"
@@ -37,4 +38,25 @@ func (s *UserService) SignUp(ctx context.Context, req userModel.SignUpReq) (int,
 	}
 
 	return userID, nil
+}
+
+// Login func returns access and refresh token.
+func (s *UserService) Login(ctx context.Context, loginReq userModel.LoginReq) (string, error) {
+	// get userdetails.
+	user, err := s.repo.UsersRepo().GetUserByEmail(ctx, loginReq.Email)
+	if err != nil {
+		return "", err
+	}
+
+	// compare hashed password with loginReq.Password.
+	if err := utils.CheckAndComparePassword(loginReq.Password, user.Password); err != nil {
+		return "", err
+	}
+
+	accessToken, err := helpers.GenerateAccessToken(user.Username, user.Email, user.ID)
+	if err != nil {
+		return "", err
+	}
+
+	return accessToken, nil
 }

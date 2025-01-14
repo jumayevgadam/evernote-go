@@ -1,2 +1,34 @@
 server:
-  
+  Port: 7000
+  Mode: Development
+  ReadTimeout: 10s
+  WriteTimeout: 10s
+  CtxDefaultTimeout: 10s
+
+logger:
+  Development: true
+  DisableCaller: false
+  DisableStackTrace: false
+  Encoding: json
+  Level: info
+
+postgres:
+  db_host: localhost
+  db_port: 5432 
+  db_user: postgres
+  db_password: 123456
+  db_name: evernote 
+  db_sslmode: disable
+
+redis:
+  address: redis:6379
+  password: ""
+
+metrics:
+  Url: 0.0.0.0:7070
+  ServiceName: api
+
+jaeger:
+  JaegerHost: localhost:6831
+  JaegerServiceName: REST_API
+  JaegerLogSpans: false

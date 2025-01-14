@@ -71,11 +71,11 @@ func GetDBConnection(ctx context.Context, cfg config.PostgresDB) (*Database, err
 // connectToDB func connects to db.
 func connectToDB(ctx context.Context, cfg config.PostgresDB) (*pgxpool.Pool, error) {
 	const (
-		maxConnections    = 200
-		minConnections    = 10
-		maxConnLifetime   = 1 * time.Hour
-		maxConnIdleTime   = 30 * time.Minute
-		healthCheckPeriod = 1 * time.Minute
+		maxConnections = 200
+		minConnections = 10
+		// maxConnLifetime   = 1 * time.Hour
+		// maxConnIdleTime   = 30 * time.Minute
+		// healthCheckPeriod = 1 * time.Minute
 	)
 
 	hostPort := net.JoinHostPort(cfg.Host, cfg.Port)
@@ -96,9 +96,9 @@ func connectToDB(ctx context.Context, cfg config.PostgresDB) (*pgxpool.Pool, err
 	// Configure the connection pool settings.
 	config.MaxConns = maxConnections
 	config.MinConns = minConnections
-	config.MaxConnLifetime = maxConnLifetime
-	config.MaxConnIdleTime = maxConnIdleTime
-	config.HealthCheckPeriod = healthCheckPeriod
+	// config.MaxConnLifetime = maxConnLifetime
+	// config.MaxConnIdleTime = maxConnIdleTime
+	// config.HealthCheckPeriod = healthCheckPeriod
 
 	// create a new connection pool.
 	db, err := pgxpool.NewWithConfig(ctx, config)

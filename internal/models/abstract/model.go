@@ -2,10 +2,22 @@
 
 package abstract
 
-// Res model is used when responsing data.
-type Res struct {
-	Error  error  `json:"error"`
-	Res    any    `json:"response"`
-	Msg    string `json:"msg"`
-	Status string `json:"status"`
+import (
+	"strconv"
+
+	redisModel "github.com/jumayevgadam/evernote-go/internal/models/redis"
+)
+
+// CacheArgument for creating key:value pair in redisDB.
+type CacheArgument struct {
+	ObjectID   int
+	ObjectType string
+}
+
+// ToCacheStorage for Sending CacheArgument into memory.
+func (c *CacheArgument) ToCacheStorage() redisModel.CacheArgument {
+	return redisModel.CacheArgument{
+		ID:         strconv.Itoa(int(c.ObjectID)),
+		ObjectType: c.ObjectType,
+	}
 }

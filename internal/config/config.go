@@ -20,50 +20,49 @@ type Config struct {
 
 // Server is used for keeping server params.
 type Server struct {
-	Port              string
-	Mode              string
-	JwtSecretKey      string
-	ReadTimeout       time.Duration
-	WriteTimeout      time.Duration
-	CtxDefaultTimeout time.Duration
+	Port              string        `mapstructure:"Port"`
+	Mode              string        `mapstructure:"Mode"`
+	ReadTimeout       time.Duration `mapstructure:"ReadTimeout"`
+	WriteTimeout      time.Duration `mapstructure:"WriteTimeout"`
+	CtxDefaultTimeout time.Duration `mapstructure:"CtxDefaultTimeout"`
 }
 
 // PostgresDB is used for keeping psqlDB params.
 type PostgresDB struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	DBName   string
-	SslMode  string
+	Host     string `mapstructure:"db_host"`
+	Port     string `mapstructure:"db_port"`
+	User     string `mapstructure:"db_user"`
+	Password string `mapstructure:"db_password"`
+	DBName   string `mapstructure:"db_name"`
+	SslMode  string `mapstructure:"db_sslmode"`
 }
 
 // Redis is used for keeping redis params.
 type RedisDB struct {
-	Address  string
-	Password string
+	Address  string `mapstructure:"address"`
+	Password string `mapstructure:"password"`
 }
 
 // Metrics config.
 type Metrics struct {
-	URL         string
-	ServiceName string
+	URL         string `mapstructure:"Url"`
+	ServiceName string `mapstructure:"ServiceName"`
 }
 
 // Logger config.
 type Logger struct {
-	Development       bool
-	DisableCaller     bool
-	DisableStacktrace bool
-	Encoding          string
-	Level             string
+	Development       bool   `mapstructure:"Development"`
+	DisableCaller     bool   `mapstructure:"DisableCaller"`
+	DisableStacktrace bool   `mapstructure:"DisableStacktrace"`
+	Encoding          string `mapstructure:"Encoding"`
+	Level             string `mapstructure:"Level"`
 }
 
 // Jaeger config.
 type Jaeger struct {
-	Host        string
-	ServiceName string
-	LogSpans    bool
+	Host        string `mapstructure:"JaegerHost"`
+	ServiceName string `mapstructure:"JaegerServiceName"`
+	LogSpans    bool   `mapstructure:"JaegerLogSpans"`
 }
 
 // LoadConfig func is used for loading configuration.

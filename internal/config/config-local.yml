@@ -1,7 +1,6 @@
 server:
   Port: 7000
   Mode: Development
-  JwtSecretKey: evernote-jwt-secret-key
   ReadTimeout: 10s
   WriteTimeout: 10s
   CtxDefaultTimeout: 10s
@@ -14,12 +13,12 @@ logger:
   Level: info
 
 postgres:
-  host: localhost
-  port: 5432
-  user: postgres
-  password: 123456
-  db_name: evernote
-  sslmode: disable
+  db_host: localhost
+  db_port: 5432 
+  db_user: postgres
+  db_password: 123456
+  db_name: evernote 
+  db_sslmode: disable
 
 redis:
   address: localhost:6379
@@ -30,6 +29,6 @@ metrics:
   ServiceName: api
 
 jaeger:
-  Host: localhost:6831
-  ServiceName: REST_API
-  LogSpans: false
+  JaegerHost: localhost:6831
+  JaegerServiceName: REST_API
+  JaegerLogSpans: false
