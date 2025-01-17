@@ -9,17 +9,17 @@ import (
 	limits "github.com/gin-contrib/size"
 	"github.com/gin-gonic/gin"
 	"github.com/jumayevgadam/evernote-go/internal/metrics"
+	"github.com/jumayevgadam/evernote-go/internal/middlewares"
 	userHandler "github.com/jumayevgadam/evernote-go/internal/users/handler"
 	userRoutes "github.com/jumayevgadam/evernote-go/internal/users/routes"
 	userService "github.com/jumayevgadam/evernote-go/internal/users/service"
 )
 
 func (s *Server) MapHandlers() *gin.Engine {
-	_, err := metrics.CreateMetrics(s.Cfg.Metrics.URL, s.Cfg.Metrics.ServiceName)
+	metrics, err := metrics.CreateMetrics(s.Cfg.Metrics.URL, s.Cfg.Metrics.ServiceName)
 	if err != nil {
 		s.Logger.Errorf("create metrics error: %v", err.Error())
 	}
-
 	s.Logger.Infof(
 		"Metrics available url: %s, ServiceName: %s",
 		s.Cfg.Metrics.URL,
@@ -32,9 +32,22 @@ func (s *Server) MapHandlers() *gin.Engine {
 	// init handlers.
 	userHandler := userHandler.NewUserHandler(userService)
 
+	// init middleware manager.
+	mw := middlewares.NewMiddlewareManager(s.Cfg, s.Logger)
+
 	// create a new gin instance.
 	r := gin.New()
 
+	r.RedirectTrailingSlash = false
+	r.RedirectFixedPath = true
+
+	// metrics and request logger middleware.
+	r.Use(
+		mw.MetricsMiddleware(metrics),
+		mw.RequestLoggerMiddleware(),
+	)
+
+	// other middlewares.
 	r.Use(
 		gin.Logger(),
 		gin.Recovery(),
@@ -47,10 +60,13 @@ func (s *Server) MapHandlers() *gin.Engine {
 		gzip.Gzip(gzip.DefaultCompression),
 		limits.RequestSizeLimiter(100),
 	)
-	r.GET("/test", func(ctx *gin.Context) {
+
+	// health check.
+	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "hello")
 	})
 
+	// v1 group.
 	v1 := r.Group("/api/v1")
 
 	// auth group.

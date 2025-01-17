@@ -11,7 +11,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		zap.L().Error("main.godotenv.Load: error", zap.Error(err))
+		zap.Error(err)
 	}
 
 	configPath := flag.String("config", "local", "path to the config file (local or docker)")

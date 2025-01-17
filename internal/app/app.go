@@ -6,12 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/jumayevgadam/evernote-go/internal/config"
 	"github.com/jumayevgadam/evernote-go/internal/connection"
 	"github.com/jumayevgadam/evernote-go/internal/database/postgres"
 	"github.com/jumayevgadam/evernote-go/internal/server"
+	"github.com/jumayevgadam/evernote-go/pkg/constants"
 	"github.com/jumayevgadam/evernote-go/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -68,7 +68,7 @@ func Run(configPath string) {
 
 	<-quit
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), constants.ShutdownTimeOut)
 	defer cancel()
 
 	if err := httpServer.Shutdown(ctx); err != nil {

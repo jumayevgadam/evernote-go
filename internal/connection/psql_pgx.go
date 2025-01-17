@@ -65,7 +65,7 @@ func GetDBConnection(ctx context.Context, cfg config.PostgresDB) (*Database, err
 	// After three times, if db connection failed, then throw fatal.
 	log.Fatalf("failed to connect to db after %d attempts: %v", retryAttempts, err)
 
-	return nil, fmt.Errorf("failed to connect to db after %d attempts: %v", retryAttempts, err)
+	return nil, fmt.Errorf("failed to connect to db after %d attempts: %w", retryAttempts, err)
 }
 
 // connectToDB func connects to db.

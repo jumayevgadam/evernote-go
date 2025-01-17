@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jumayevgadam/evernote-go/internal/models/abstract"
 	userModel "github.com/jumayevgadam/evernote-go/internal/models/user"
 	"github.com/jumayevgadam/evernote-go/internal/users"
 	"github.com/jumayevgadam/evernote-go/pkg/httpError"
@@ -27,8 +28,8 @@ func NewUserHandler(service users.Service) *UserHandler {
 func (h *UserHandler) SignUp() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req userModel.SignUpReq
-
-		err := reqvalidator.ReadRequestJSON(c, &req)
+		
+		err := reqvalidator.ReadRequest(c, &req)
 		if err != nil {
 			httpError.Response(c, err)
 			return
@@ -41,9 +42,10 @@ func (h *UserHandler) SignUp() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"message": "user successfully created",
-			"userID":  userID,
+		c.JSON(http.StatusOK, abstract.SuccessResponse{
+			Status:  "success",
+			Data:    userID,
+			Message: "completed successfully",
 		})
 	}
 }
@@ -52,7 +54,7 @@ func (h *UserHandler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var loginReq userModel.LoginReq
 
-		err := reqvalidator.ReadRequestJSON(c, &loginReq)
+		err := reqvalidator.ReadRequest(c, &loginReq)
 		if err != nil {
 			httpError.Response(c, err)
 			return
@@ -64,8 +66,10 @@ func (h *UserHandler) Login() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"accessToken": tokenStr,
+		c.JSON(http.StatusOK, abstract.SuccessResponse{
+			Status:  "success",
+			Data:    tokenStr,
+			Message: "completed successfully",
 		})
 	}
 }

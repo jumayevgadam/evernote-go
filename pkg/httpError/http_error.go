@@ -191,7 +191,6 @@ func Response(c *gin.Context, err error) {
 	parsedErr := ParseError(err)
 
 	c.JSON(parsedErr.Status(), gin.H{
-		"ErrStatus":  parsedErr.Status(),
-		"ErrMessage": parsedErr.Message(),
+		"error": parsedErr,
 	})
 }

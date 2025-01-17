@@ -1,5 +1,5 @@
-run:	
-	go run cmd/main.go
+local_run:	
+	go run cmd/main.go -config=local
 
 tidy:
 	go mod tidy

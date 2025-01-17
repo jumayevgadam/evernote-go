@@ -21,3 +21,4 @@ func (c *CacheArgument) ToCacheStorage() redisModel.CacheArgument {
 		ObjectType: c.ObjectType,
 	}
 }
+
