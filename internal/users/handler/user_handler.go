@@ -25,10 +25,21 @@ func NewUserHandler(service users.Service) *UserHandler {
 }
 
 // SignUp method.
+// @Summary User Register
+// @Tags users
+// @Description user register to evernote
+// @Accept json
+// @Produce json
+// @Param input body userModel.SignUpReq true "sign up info"
+// @Success 200 {object} abstract.SuccessResponse
+// @Failure 400 {object} httpError.RestErr
+// @Failure 500 {object} httpError.RestErr
+// @Failure default {object} httpError.RestErr
+// @Router /auth/register [post]
 func (h *UserHandler) SignUp() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req userModel.SignUpReq
-		
+
 		err := reqvalidator.ReadRequest(c, &req)
 		if err != nil {
 			httpError.Response(c, err)
@@ -50,6 +61,18 @@ func (h *UserHandler) SignUp() gin.HandlerFunc {
 	}
 }
 
+// Login func for users.
+// @Summary User Login
+// @Tags users
+// @Description user login to evernote
+// @Accept json
+// @Produce json
+// @Param input body userModel.LoginReq true "login info"
+// @Success 200 {object} abstract.SuccessResponse
+// @Failure 400 {object} httpError.RestErr
+// @Failure 500 {object} httpError.RestErr
+// @Failure default {object} httpError.RestErr
+// @Router /auth/login [post]
 func (h *UserHandler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var loginReq userModel.LoginReq
@@ -60,7 +83,7 @@ func (h *UserHandler) Login() gin.HandlerFunc {
 			return
 		}
 
-		tokenStr, err := h.service.Login(c, loginReq)
+		tokens, err := h.service.Login(c, loginReq)
 		if err != nil {
 			httpError.Response(c, err)
 			return
@@ -68,7 +91,7 @@ func (h *UserHandler) Login() gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, abstract.SuccessResponse{
 			Status:  "success",
-			Data:    tokenStr,
+			Data:    tokens,
 			Message: "completed successfully",
 		})
 	}

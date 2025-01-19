@@ -6,10 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"unsafe"
 
 	"github.com/jumayevgadam/evernote-go/internal/config"
 	"github.com/jumayevgadam/evernote-go/internal/connection"
 	"github.com/jumayevgadam/evernote-go/internal/database/postgres"
+	"github.com/jumayevgadam/evernote-go/internal/models/notebooks"
 	"github.com/jumayevgadam/evernote-go/internal/server"
 	"github.com/jumayevgadam/evernote-go/pkg/constants"
 	"github.com/jumayevgadam/evernote-go/pkg/logger"
@@ -44,6 +46,8 @@ func Run(configPath string) {
 
 	dataStore := postgres.NewDataStore(psqlDB)
 
+	appLogger.Info("u", unsafe.Sizeof(notebooks.RequestData{}))
+
 	srv := server.NewServer(cfg, dataStore, appLogger)
 	r := srv.MapHandlers()
 
@@ -66,6 +70,7 @@ func Run(configPath string) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
+	// this line blocks until signal received.
 	<-quit
 
 	ctx, cancel := context.WithTimeout(context.Background(), constants.ShutdownTimeOut)

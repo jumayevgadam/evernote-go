@@ -1,6 +1,7 @@
 package server
 
 import (
+	_ "github.com/jumayevgadam/evernote-go/docs"
 	"github.com/jumayevgadam/evernote-go/internal/config"
 	"github.com/jumayevgadam/evernote-go/internal/database"
 	"github.com/jumayevgadam/evernote-go/pkg/logger"

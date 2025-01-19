@@ -5,6 +5,7 @@ import (
 
 	"github.com/jumayevgadam/evernote-go/internal/database"
 	"github.com/jumayevgadam/evernote-go/internal/helpers"
+	jwtModel "github.com/jumayevgadam/evernote-go/internal/models/jwt"
 	userModel "github.com/jumayevgadam/evernote-go/internal/models/user"
 	"github.com/jumayevgadam/evernote-go/internal/users"
 	"github.com/jumayevgadam/evernote-go/pkg/utils"
@@ -41,22 +42,32 @@ func (s *UserService) SignUp(ctx context.Context, req userModel.SignUpReq) (int,
 }
 
 // Login func returns access and refresh token.
-func (s *UserService) Login(ctx context.Context, loginReq userModel.LoginReq) (string, error) {
+func (s *UserService) Login(ctx context.Context, loginReq userModel.LoginReq) (jwtModel.Tokens, error) {
 	// get userdetails.
 	user, err := s.repo.UsersRepo().GetUserByEmail(ctx, loginReq.Email)
 	if err != nil {
-		return "", err
+		return jwtModel.Tokens{}, err
 	}
 
 	// compare hashed password with loginReq.Password.
 	if err := utils.CheckAndComparePassword(loginReq.Password, user.Password); err != nil {
-		return "", err
+		return jwtModel.Tokens{}, err
 	}
 
+	// accessToken generation.
 	accessToken, err := helpers.GenerateAccessToken(user.Username, user.Email, user.ID)
 	if err != nil {
-		return "", err
+		return jwtModel.Tokens{}, err
 	}
 
-	return accessToken, nil
+	// refreshToken generation.
+	refreshToken, err := helpers.GenerateRefreshToken(user.ID)
+	if err != nil {
+		return jwtModel.Tokens{}, err
+	}
+
+	return jwtModel.Tokens{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }

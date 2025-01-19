@@ -13,6 +13,8 @@ import (
 	userHandler "github.com/jumayevgadam/evernote-go/internal/users/handler"
 	userRoutes "github.com/jumayevgadam/evernote-go/internal/users/routes"
 	userService "github.com/jumayevgadam/evernote-go/internal/users/service"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func (s *Server) MapHandlers() *gin.Engine {
@@ -38,6 +40,14 @@ func (s *Server) MapHandlers() *gin.Engine {
 	// create a new gin instance.
 	r := gin.New()
 
+	r.Use(
+		gin.Logger(),
+		gin.Recovery(),
+	)
+
+	// add swagger url.
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	r.RedirectTrailingSlash = false
 	r.RedirectFixedPath = true
 
@@ -49,8 +59,6 @@ func (s *Server) MapHandlers() *gin.Engine {
 
 	// other middlewares.
 	r.Use(
-		gin.Logger(),
-		gin.Recovery(),
 		cors.New(cors.Config{
 			AllowAllOrigins: true,
 			AllowMethods:    []string{"POST", "GET", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"},
