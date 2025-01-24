@@ -6,12 +6,12 @@ import (
 )
 
 // MiddlewareManager.
-type MiddlewareManager struct {
+type MDWManager struct {
 	Cfg    *config.Config
 	Logger logger.Logger
 }
 
 // NewMiddlewareManager creates a new instance of MiddlewareManager.
-func NewMiddlewareManager(cfg *config.Config, logger logger.Logger) *MiddlewareManager {
-	return &MiddlewareManager{Cfg: cfg, Logger: logger}
+func NewMiddlewareManager(cfg *config.Config, logger logger.Logger) *MDWManager {
+	return &MDWManager{Cfg: cfg, Logger: logger}
 }

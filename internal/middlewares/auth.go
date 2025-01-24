@@ -12,33 +12,33 @@ import (
 const UserCtx = "user_id"
 
 // AuthMiddleware for checking user.
-func (mw *MiddlewareManager) AuthMiddleware() gin.HandlerFunc {
+func (mw *MDWManager) AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		jwtToken, err := mw.extractBearerToken(ctx.GetHeader("Authorization"))
+		jwtToken, err := mw.extractBearerToken(ctx.Request.Header.Get("Authorization"))
 		if err != nil {
 			httpError.Response(ctx, err)
 			return
 		}
 
-		userID, err := helpers.ParseAccessToken(jwtToken)
+		claims, err := helpers.ParseAccessToken(jwtToken)
 		if err != nil {
-			httpError.Response(ctx, err)
+			httpError.Response(ctx, httpError.NewUnauthorizedError(err.Error()))
 			return
 		}
 
-		ctx.Set(UserCtx, userID)
+		ctx.Set(UserCtx, claims.UserID)
 
 		ctx.Next()
 	}
 }
 
-func (mw *MiddlewareManager) extractBearerToken(header string) (string, error) {
+func (mw *MDWManager) extractBearerToken(header string) (string, error) {
 	if header == "" {
 		return "", errors.New("header value is empty")
 	}
 
 	jwtToken := strings.Split(header, " ")
-	if len(jwtToken) != 2 {
+	if len(jwtToken) != 2 || jwtToken[0] != "Bearer" {
 		return "", errors.New("incorrectly formatted authorization header")
 	}
 

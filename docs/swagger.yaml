@@ -8,6 +8,13 @@ definitions:
       status:
         type: string
     type: object
+  github_com_jumayevgadam_evernote-go_internal_models_notebooks.Request:
+    properties:
+      notebook_name:
+        type: string
+    required:
+    - notebook_name
+    type: object
   github_com_jumayevgadam_evernote-go_internal_models_user.LoginReq:
     properties:
       email:
@@ -108,4 +115,40 @@ paths:
       summary: User Register
       tags:
       - users
+  /notebooks:
+    post:
+      consumes:
+      - application/json
+      description: creating a new notebook
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: notebook request info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_jumayevgadam_evernote-go_internal_models_notebooks.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_jumayevgadam_evernote-go_internal_models_abstract.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+        default:
+          description: ""
+          schema: {}
+      summary: Add Notebook
+      tags:
+      - notebooks
 swagger: "2.0"

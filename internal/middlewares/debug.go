@@ -8,7 +8,7 @@ import (
 )
 
 // Debug middleware.
-func (mw *MiddlewareManager) DebugMiddleware() gin.HandlerFunc {
+func (mw *MDWManager) DebugMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		if mw.Cfg.Server.Mode == "Development" {
 			dump, err := httputil.DumpRequest(ctx.Request, true)

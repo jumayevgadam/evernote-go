@@ -5,6 +5,8 @@ import (
 
 	"github.com/jumayevgadam/evernote-go/internal/connection"
 	"github.com/jumayevgadam/evernote-go/internal/database"
+	"github.com/jumayevgadam/evernote-go/internal/notebooks"
+	notebookRepository "github.com/jumayevgadam/evernote-go/internal/notebooks/repository"
 	"github.com/jumayevgadam/evernote-go/internal/users"
 	userRepository "github.com/jumayevgadam/evernote-go/internal/users/repository"
 )
@@ -13,9 +15,11 @@ var _ database.DataStore = (*DataStore)(nil)
 
 // DataStore is a postgres implementation of database.DataStore.
 type DataStore struct {
-	db       connection.DB
-	user     users.Repository
-	userInit sync.Once
+	db           connection.DB
+	user         users.Repository
+	userInit     sync.Once
+	notebook     notebooks.Repository
+	notebookInit sync.Once
 }
 
 // NewDataStore returns a new DataStore.
@@ -32,4 +36,13 @@ func (d *DataStore) UsersRepo() users.Repository {
 	})
 
 	return d.user
+}
+
+// NotebooksRepo returns a notebook repository.
+func (d *DataStore) NotebooksRepo() notebooks.Repository {
+	d.notebookInit.Do(func() {
+		d.notebook = notebookRepository.NewNotebookRepository(d.db)
+	})
+
+	return d.notebook
 }

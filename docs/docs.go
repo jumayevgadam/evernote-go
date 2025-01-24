@@ -115,6 +115,59 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/notebooks": {
+            "post": {
+                "description": "creating a new notebook",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notebooks"
+                ],
+                "summary": "Add Notebook",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "notebook request info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_jumayevgadam_evernote-go_internal_models_notebooks.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_jumayevgadam_evernote-go_internal_models_abstract.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {}
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -126,6 +179,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_jumayevgadam_evernote-go_internal_models_notebooks.Request": {
+            "type": "object",
+            "required": [
+                "notebook_name"
+            ],
+            "properties": {
+                "notebook_name": {
                     "type": "string"
                 }
             }

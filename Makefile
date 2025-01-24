@@ -2,7 +2,7 @@ local_run:
 	go run cmd/main.go -config=local
 
 swag_init:
-	swag init -g ./cmd/main.go -o ./docs --parseDependency
+	swag init -g ./cmd/main.go -o ./docs --pd
 
 tidy:
 	go mod tidy

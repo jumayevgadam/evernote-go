@@ -1,3 +1,6 @@
+// app package contains all project initializations and other dependencies,
+// also graceful shutdown of application initialized in this package.
+
 package app
 
 import (
@@ -6,12 +9,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"unsafe"
 
 	"github.com/jumayevgadam/evernote-go/internal/config"
 	"github.com/jumayevgadam/evernote-go/internal/connection"
 	"github.com/jumayevgadam/evernote-go/internal/database/postgres"
-	"github.com/jumayevgadam/evernote-go/internal/models/notebooks"
 	"github.com/jumayevgadam/evernote-go/internal/server"
 	"github.com/jumayevgadam/evernote-go/pkg/constants"
 	"github.com/jumayevgadam/evernote-go/pkg/logger"
@@ -45,8 +46,6 @@ func Run(configPath string) {
 	}()
 
 	dataStore := postgres.NewDataStore(psqlDB)
-
-	appLogger.Info("u", unsafe.Sizeof(notebooks.RequestData{}))
 
 	srv := server.NewServer(cfg, dataStore, appLogger)
 	r := srv.MapHandlers()

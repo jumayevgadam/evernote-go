@@ -10,7 +10,7 @@ const (
 // JwtTokenExpiry times.
 const (
 	// AccessTokenExpiryTime is.
-	AccessTokenExpiryTime = 5 * time.Second
+	AccessTokenExpiryTime = 5 * time.Minute
 
 	// RefreshTokenExpiryTime is.
 	RefreshTokenExpiryTime = 24 * time.Hour

@@ -8,7 +8,7 @@ import (
 )
 
 // Prometheus metrics middleware.
-func (mw *MiddlewareManager) MetricsMiddleware(metrics metrics.Metrics) gin.HandlerFunc {
+func (mw *MDWManager) MetricsMiddleware(metrics metrics.Metrics) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 

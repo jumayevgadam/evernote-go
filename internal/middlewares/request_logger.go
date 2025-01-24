@@ -8,7 +8,7 @@ import (
 )
 
 // RequestLoggerMiddleware logs details about each HTTP request.
-func (mw *MiddlewareManager) RequestLoggerMiddleware() gin.HandlerFunc {
+func (mw *MDWManager) RequestLoggerMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 

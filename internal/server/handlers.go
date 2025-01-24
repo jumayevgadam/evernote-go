@@ -10,6 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jumayevgadam/evernote-go/internal/metrics"
 	"github.com/jumayevgadam/evernote-go/internal/middlewares"
+	notebookHandler "github.com/jumayevgadam/evernote-go/internal/notebooks/handler"
+	notebookRoutes "github.com/jumayevgadam/evernote-go/internal/notebooks/routes"
+	notebookService "github.com/jumayevgadam/evernote-go/internal/notebooks/service"
 	userHandler "github.com/jumayevgadam/evernote-go/internal/users/handler"
 	userRoutes "github.com/jumayevgadam/evernote-go/internal/users/routes"
 	userService "github.com/jumayevgadam/evernote-go/internal/users/service"
@@ -30,9 +33,11 @@ func (s *Server) MapHandlers() *gin.Engine {
 
 	// init services.
 	userService := userService.NewUserService(s.DataStore)
+	notebookService := notebookService.NewNotebookService(s.DataStore)
 
 	// init handlers.
 	userHandler := userHandler.NewUserHandler(userService)
+	notebookHandler := notebookHandler.NewNotebookHandler(notebookService)
 
 	// init middleware manager.
 	mw := middlewares.NewMiddlewareManager(s.Cfg, s.Logger)
@@ -77,11 +82,15 @@ func (s *Server) MapHandlers() *gin.Engine {
 	// v1 group.
 	v1 := r.Group("/api/v1")
 
-	// auth group.
+	// v1 subgroups.
 	authGroup := v1.Group("/auth")
+	notebookGroup := v1.Group("/notebooks")
 
 	// init routes.
 	userRoutes.MapUserRoutes(authGroup, userHandler)
+
+	notebookGroup.Use(mw.AuthMiddleware())
+	notebookRoutes.MapNotebookRoutes(notebookGroup, notebookHandler)
 
 	return r
 }
